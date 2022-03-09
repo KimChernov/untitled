@@ -9,19 +9,13 @@ caps = Selenium::WebDriver::Chrome::Options.new(options: opt)
 driver = Selenium::WebDriver.for(:chrome, capabilities: caps)
 driver.get("http://qa-web-test-task.s3-website.eu-central-1.amazonaws.com")
 
-i = 0
-while driver.find_element(:link_text, "Next") || driver.find_element(:link_text, "Другой текст") || driver.find_element(:link_text, "Еще текст")  do
-  if driver.find_element(:link_text, "Next")
-    i += 1
-    driver.find_element(:link_text, "Next").click
-  elsif driver.find_element(:link_text, "Другой текст")
-    i += 1
-    driver.find_element(:link_text, "Другой текст").click
-  elsif driver.find_element(:link_text, "Еще текст")
-    i += 1
-    driver.find_element(:link_text, "Еще текст").click
-  else
-    raise "Cсылки нет на странице #{i}!"
+driver.find_element(:link_text, "Начать проверку").click
+for i in 2..10000
+  if driver.find_element(xpath: "//a[contains(text(), 'Next') or contains(text(), 'Ещё ссылка') or contains(text(), 'И ещё одна') ]") then
+    driver.find_element(xpath: "//a[@href='#{i}.html']").click
+    next
   end
+  puts "Cсылки нет на странице #{i}"
 end
+
 driver.quit
